@@ -26,14 +26,14 @@ module.exports = () => {
       const key = ctx.state.userInfo?.objectId
 			? `user:${ctx.state.userInfo.objectId}`
 			: `ip:${ctx.ip}`;
-			
+
       try {
         
         await limiter.consume(key, 1);
       } catch (_err) {
         if (ctx.state.userInfo) {
           await ctx.model('Users').where({ id: ctx.state.userInfo.objectId }).update(
-            { is_banned: true },
+            { is_banned: 1 },
           );
           await ctx.model('Comment').where({ user_id: ctx.state.userInfo.objectId }).delete();
         }
