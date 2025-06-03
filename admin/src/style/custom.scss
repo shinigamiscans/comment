@@ -185,3 +185,14 @@ div[tabindex='-1'] {
 .btn-social:hover {
 	color: #000;
 }
+
+.change-password-wrapper {
+	display: flex;
+	flex-direction: column;
+
+	.change-password-label {
+		display: flex;
+		justify-content: space-between;
+		align-items: center
+	}
+}

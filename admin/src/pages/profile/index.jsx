@@ -16,6 +16,7 @@ export default function () {
   const [isPasswordUpdating, setPasswordUpdating] = useState(false);
   const [isProfileUpdating, setProfileUpdating] = useState(false);
 	const [isConnecting, setConnecting] = useState(false);
+	const [isEditPassword, setEditPassword] = useState(false);
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user);
   const { t } = useTranslation();
@@ -43,10 +44,6 @@ export default function () {
 			if(avatar) {
 				urlAvatar = await uploadToServer(avatar);
 			}
-
-			// if (!display_name || !url) {
-			//   return alert(t('nickname and homepage are required'));
-			// }
 
 			await dispatch.user.updateProfile({ display_name, avatar: urlAvatar });
 
@@ -178,7 +175,7 @@ export default function () {
     e.preventDefault();
 
     const password = e.target.password.value;
-    const confirm = e.target.confirm.value;
+    const confirm = e.target.confirmPassword.value;
 
     if (!password || !confirm) {
       return alert(t('please input password'));
@@ -190,8 +187,14 @@ export default function () {
 
     setPasswordUpdating(true);
     await updateProfile({ password });
-    setPasswordUpdating(false);
+		alert('Password updated successfully');
+		setPasswordUpdating(false);
+		location.reload();
   };
+
+	const onShowPasswordEdit = () => {
+		setEditPassword(isEditPassword => !isEditPassword)
+	}
 
   const unbind = async function (type) {
     await updateProfile({ [type]: '' });
@@ -335,6 +338,63 @@ export default function () {
                   </ul>
                 </form>
               </section>
+							<section>
+								<div className='change-password-wrapper'>
+									<div className='change-password-label'>
+										<div>
+											<h3>{t('password')}</h3>
+											<span>******</span>
+										</div>
+										<a href="#" style={{ color: '#bbb', fontSize: '1.1em' }} onClick={onShowPasswordEdit}>
+											{ isEditPassword ? t('cancel') : t('edit') }
+										</a>
+									</div>
+									{ isEditPassword ? (
+									<div>
+										<form method="post" onSubmit={onPasswordUpdate}>
+											<ul className="typecho-option">
+												<li>
+													<input
+														id="password"
+														name="password"
+														type="password"
+														className="text"
+														placeholder='New password'
+														disabled={isPasswordUpdating}
+													/>
+													<p className="description"></p>
+												</li>
+											</ul>
+											<ul className="typecho-option">
+												<li>
+													<input
+														id="confirm-password"
+														name="confirmPassword"
+														type="password"
+														className="text"
+														placeholder='Confirm new password'
+														disabled={isPasswordUpdating}
+													/>
+													<p className="description"></p>
+												</li>
+											</ul>
+											<ul className="typecho-option typecho-option-submit">
+												<li>
+													<button
+														type="submit"
+														className="btn primary"
+														disabled={isPasswordUpdating}
+													>
+														{t('submit')}
+													</button>
+												</li>
+											</ul>
+										</form>
+									</div>
+									) : null }
+									
+								</div>
+							</section>
               <br />
               <section id="social-account">
 							<h3>Connect</h3>
